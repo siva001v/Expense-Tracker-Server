@@ -2,7 +2,7 @@ const User = require("../models/user");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-const BCRYPT_SECRET = process.env.BCRYPT_SECRET;
+const JWT_SECRET = process.env.JWT_SECRET;
 
 exports.postLogin = async (req, res, next) => {
   const { email, password } = req.body;
@@ -19,7 +19,7 @@ exports.postLogin = async (req, res, next) => {
       const { password: _, ...userWithoutPassword } = existingUser.toObject();
       const jwToken = jwt.sign(
         { email: email, id: existingUser._id },
-        BCRYPT_SECRET,
+        JWT_SECRET,
         { expiresIn: "1h" }
       );
       return res.status(200).json({

@@ -9,7 +9,7 @@ const authRoutes = require("./routes/auth");
 const expenseRoutes = require("./routes/expense");
 const userRoutes = require("./routes/user");
 
-const requiredEnv = ["MONGODB_URI", "BCRYPT_SECRET", "PORT"];
+const requiredEnv = ["MONGODB_URI", "JWT_SECRET", "PORT"];
 
 requiredEnv.forEach((key) => {
   if (!process.env[key]) {

@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 
-const BCRYPT_SECRET = process.env.BCRYPT_SECRET;
+const JWT_SECRET = process.env.JWT_SECRET;
 
 exports.auth = (req, res, next) => {
   const authorization = req.get("Authorization");
@@ -13,7 +13,7 @@ exports.auth = (req, res, next) => {
   let decodedToken;
 
   try {
-    decodedToken = jwt.verify(token, BCRYPT_SECRET);
+    decodedToken = jwt.verify(token, JWT_SECRET);
   } catch (err) {
     return res.status(401).json({ message: "Invalid token" });
   }
