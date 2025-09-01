@@ -8,6 +8,7 @@ const bodyParser = require("body-parser");
 const authRoutes = require("./routes/auth");
 const expenseRoutes = require("./routes/expense");
 const userRoutes = require("./routes/user");
+const logger = require("./util/logger");
 
 const requiredEnv = ["MONGODB_URI", "JWT_SECRET", "PORT"];
 
@@ -49,9 +50,9 @@ mongoose
   .connect(MONGODB_URI)
   .then((result) => {
     app.listen(PORT, () => {
-      console.log(`Started listening on port - ${PORT}`);
+      logger.info(`Conncted to the Database and listening to the port ${PORT}`);
     });
   })
-  .catch((err) => {
-    console.log(err);
+  .catch((error) => {
+    logger.error("Error connecting to the database", { error });
   });

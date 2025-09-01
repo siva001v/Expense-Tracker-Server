@@ -1,5 +1,6 @@
 const { default: mongoose } = require("mongoose");
 const Expense = require("../models/expense");
+const logger = require("../util/logger");
 
 exports.getExpenses = async (req, res, next) => {
   const userId = req.userId;
@@ -11,6 +12,7 @@ exports.getExpenses = async (req, res, next) => {
     order = "desc",
   } = req.query;
   if (!userId) {
+    logger.error("Error while retrieving User id from request");
     return res.status(500).json({
       message: "Bad Request, misssing userId",
     });
@@ -52,6 +54,12 @@ exports.postExpenses = async (req, res, next) => {
   const { title, amount, category, date } = req.body;
   const userId = req.userId;
 
+  if (!userId) {
+    logger.error("Error while retrieving User id from request");
+    return res.status(500).json({
+      message: "Bad Request, misssing userId",
+    });
+  }
   const expense = new Expense({ title, amount, category, date, userId });
 
   try {
@@ -61,11 +69,13 @@ exports.postExpenses = async (req, res, next) => {
         message: "Expense creation failed",
       });
     }
+    logger.info("Expense created", { expenseId: savedExpense._id });
     return res.status(201).json({
       message: "Expense created successfully",
-      data: result,
+      data: savedExpense,
     });
   } catch (error) {
+    logger.error("Error while fetching expenses", { error });
     res.status(500).json({
       message: "Error saving the expense",
     });
@@ -92,6 +102,7 @@ exports.getExpense = async (req, res, next) => {
       data: expense,
     });
   } catch (error) {
+    logger.error("Error while teh expense", { error });
     res.status(500).json({
       message: "Error getting the expense",
     });
@@ -115,11 +126,13 @@ exports.putExpenses = async (req, res, next) => {
         message: "No data found for the given expense id",
       });
     }
+    logger.info("Expense updated", { expenseId: updatedExpense._id });
     return res.status(201).json({
       message: "Expense updated successfully",
       data: updatedExpense,
     });
   } catch (error) {
+    logger.error("Error updating teh expense", { error });
     res.status(500).json({
       message: "Error while updating expense",
     });
@@ -140,11 +153,13 @@ exports.deleteExpenses = async (req, res, next) => {
         message: "No expense found with the give id to delete",
       });
     }
+    logger.info("Expense deleted", { expenseId: expense._id });
     return res.status(200).json({
       message: "Expense deleted successfully",
       data: expense,
     });
   } catch (error) {
+    logger.error("Error deleting the expense", { error });
     res.status(500).json({
       message: "Error while deleting the expense",
     });
@@ -177,6 +192,7 @@ exports.getExpensesSummary = async (req, res, next) => {
       data: result,
     });
   } catch (error) {
+    logger.error("Error fetching the summary", { error });
     res.status(500).json({
       message: "Error while retrieving data",
     });
@@ -237,6 +253,7 @@ exports.getExpensesTrends = async (req, res, next) => {
       data: trendsResult,
     });
   } catch (error) {
+    logger.error("Error fetching the trends", { error });
     res.status(500).json({
       message: "Error while retrieving data",
     });

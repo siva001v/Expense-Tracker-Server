@@ -5,6 +5,7 @@ const bcrypt = require("bcryptjs");
 exports.getUser = async (req, res, next) => {
   const id = req.userId;
   if (!id) {
+    logger.error("Error while retrieving User id from request");
     return res.status(500).json({
       message: "User id is missing",
     });
@@ -24,7 +25,7 @@ exports.getUser = async (req, res, next) => {
       data: userWithoutPassword,
     });
   } catch (error) {
-    console.log(error);
+    logger.error("Error fetching the user data", { error });
     res.status(500).json({
       message: "Error fetching the user data",
     });
@@ -35,6 +36,7 @@ exports.updateUser = async (req, res, next) => {
   const { id } = req.params;
   const body = req.body;
   if (!id) {
+    logger.error("Error while retrieving User id from request");
     return res.status(500).json({
       message: "User id is missing",
     });
@@ -47,12 +49,13 @@ exports.updateUser = async (req, res, next) => {
         message: "User not found",
       });
     }
+    logger.info("User details updated", { id: id });
     return res.status(200).json({
       message: "User updated successfully",
       data: user,
     });
   } catch (error) {
-    console.log(error);
+    logger.error("Error updating the user", { error });
     res.status(500).json({
       message: "Error updating user data",
     });
@@ -62,6 +65,7 @@ exports.updateUser = async (req, res, next) => {
 exports.changeUserPassword = async (req, res, next) => {
   const id = req.userId;
   if (!id) {
+    logger.error("Error while retrieving User id from request");
     return res.status(500).json({
       message: "User id is missing",
     });
@@ -94,11 +98,12 @@ exports.changeUserPassword = async (req, res, next) => {
     const hashPassword = await bcrypt.hash(newPassword, 12);
     user.password = hashPassword;
     await user.save();
+    logger.info("User password updated", { id: user._id });
     return res.status(200).json({
       message: "Password updated successfully",
     });
   } catch (error) {
-    console.log(error);
+    logger.error("Error changing the password", { error });
     res.status(500).json({
       message: "Error updating user data",
     });

@@ -18,6 +18,8 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.17.2",
     "nodemon": "^3.1.10",
-    "npm": "^11.5.2"
+    "npm": "^11.5.2",
+    "pino": "^9.9.0",
+    "pino-pretty": "^13.1.1"
   }
 }
